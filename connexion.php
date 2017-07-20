@@ -18,7 +18,7 @@ if(isset($_POST['pseudo']) && isset($_POST['mdp']))
 	$verif_connexion->bindParam(":mdp", $mdp, PDO::PARAM_STR);
 	$verif_connexion->execute();
 
-		if($verif_connexion->rowCount() > 0)
+	if($verif_connexion->rowCount() > 0)
 	{
 		// Si nous avons une ligne alors le pseudo et le mdp sont corrects
 		//$message .='<div class="alert alert-success">OK Welcome to Lokisalle</div>';// WE REDIRECT ON THE MAIN PAGE
