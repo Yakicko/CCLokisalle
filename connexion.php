@@ -1,12 +1,23 @@
 <?php
 require_once("inc/init.inc.php");
 
-// verification si l'utilisateurest connecte sinon on le redirige sur son profile
-/*if(isConnected())
+
+if(isset($_GET["action"]) && $_GET["action"] == "deconnexion")
 {
-	header("location:profil.php");                
+    session_destroy();
+    header("location:panier.php");
 }
-*/
+
+
+//verification si l'utilisateurest connecte sinon on le redirige sur son profile
+if(isConnected())
+{
+	header("location:panier.php");                
+}
+
+
+
+
 // verification de l'existence des indices du formulaire
 if(isset($_POST['pseudo']) && isset($_POST['mdp']))
 {
@@ -30,12 +41,12 @@ if(isset($_POST['pseudo']) && isset($_POST['mdp']))
 		$_SESSION['utilisateur']['nom'] = $info_utilisateur['nom'];
 		$_SESSION['utilisateur']['prenom'] = $info_utilisateur['prenom'];
 		$_SESSION['utilisateur']['email'] = $info_utilisateur['email'];
-		$_SESSION['utilisateur']['sexe'] = $info_utilisateur['sexe'];
+		$_SESSION['utilisateur']['civilite'] = $info_utilisateur['civilite'];
 		$_SESSION['utilisateur']['statut'] = $info_utilisateur['statut'];
 		$_SESSION['utilisateur']['date_enregistrement'] = $info_utilisateur['date_enregistrement'];
 	
 		// on redirige sur profil
-		header("location:profil.php");
+		header("location:index.php");
 	}
 	else {
 		$message .= '<div class="alert alert-danger" role="alert" style="margin-top:20px;">Attention, erreur sur le pseudo ou le mot de passe<br /> Veuillez recommencer sil vous plait.</div>';
@@ -59,11 +70,20 @@ require("inc/nav.inc.php");
        	<div class="row">
 		  <div class="col-sm-4 col-sm-offset-4">
 			<form method="post" action="" class="well text-center">
-				<label for="pseudo">Pseudo</label>
-				<input type="text" name="pseudo" id="pseudo" class="form-control" value="" />
-				<label for="mdp">Mot de passe</label>
-				<input type="text" name="mdp" id="mdp" class="form-control" value="" />
-				<button type="submit" name="inscription" id="inscription" class="form-control btn btn-success" style="margin-top:20px;"> Connexion </button>
+				<div class="form-group">
+					<label for="pseudo">Pseudo</label>
+					<input type="text" name="pseudo" id="pseudo" class="form-control" value="" />
+				</div>
+				<div class="form-group">
+					<label for="mdp">Mot de passe</label>
+					<input type="text" name="mdp" id="mdp" class="form-control" value="" />
+				</div>
+				<div class="form-group">
+					<input type="submit" name="inscription" id="inscription" class="form-control btn btn-success" value="Connexion"> 
+				</div>
+
+				<a href="inscription.php" class="btn btn-block btn-warning">S'inscire</a>
+
 			</form>	
 		  </div>
         </div> 

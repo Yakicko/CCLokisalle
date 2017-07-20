@@ -20,7 +20,7 @@ require("inc/nav.inc.php");
         <div class="container">
 
             <div class="starter-template">
-                <h1>Template CCLokisalle</h1>
+                <h1>Accueil</h1>
                 <?= $message ?>
             </div><!--/.starter-template -->
 
