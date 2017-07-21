@@ -84,10 +84,10 @@ require("inc/nav.inc.php");
                             </ol>
                             <div class="carousel-inner">
                                 <div class="item active">
-                                    <img class="slide-image" src="img/crorange.jpg" alt="">
+                                    <img class="slide-image" src="img/office-space-1744803_1920.jpg" alt="">
                                 </div>
                                 <div class="item">
-                                    <img class="slide-image" src="img/crview.jpg" alt="">
+                                    <img class="slide-image" src="img/table-2469046_1920.jpg" alt="">
                                 </div>
                                 <div class="item">
                                     <img class="slide-image" src="img/crbricks.jpg" alt="">

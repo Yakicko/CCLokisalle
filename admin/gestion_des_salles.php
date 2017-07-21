@@ -13,14 +13,13 @@ if(isset($_POST["titre"], $_POST["description"], $_POST["pays"], $_POST["ville"]
 {
     $titre = $_POST["titre"];
     $description = $_POST["description"];
-    $photo = $_POST["photo"];
     $pays = $_POST["pays"];
     $ville = $_POST["ville"];
     $adresse = $_POST["adresse"];
     $cp = $_POST["cp"];
     $capacite = $_POST["capacite"];
     $categorie = $_POST["categorie"];
-    // $photo = $_FILES["photo"];
+   
     $photo_bdd = "";
    
 
@@ -141,7 +140,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "ajout")
                             <input type="text" name="adresse" id="adresse" class="form-control"value="<?php if(isset($_POST["adresse"])) echo $_POST["adresse"] ?>">
                         </div>
                         <div class="form-group">
-                            <label for="cp">Code psotal</label>
+                            <label for="cp">Code postal</label>
                             <input type="text" name="cp" id="cp" class="form-control"value="<?php if(isset($_POST["cp"])) echo $_POST["cp"] ?>">
                         </div>
                         <div class="form-group">
