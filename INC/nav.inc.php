@@ -11,19 +11,19 @@
         </div><!--/.navbar-header -->
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.php">Accueil</a></li>
+                <li class="active"><a href="<?php echo URL ?>index.php">Accueil</a></li>
             <?php
                 if(!isConnected())
                 {
             ?>
-                <li><a href="connexion.php">Connexion</a></li>
-                <li><a href="inscription.php">Inscription</a></li>
+                <li><a href="<?php echo URL ?>connexion.php">Connexion</a></li>
+                <li><a href="<?php echo URL ?>inscription.php">Inscription</a></li>
             <?php
                 }
                 elseif(isConnected())
                 {
             ?>
-                <li><a href="connexion.php?action=deconnexion">Deconnexion</a></li>
+                <li><a href="?action=deconnexion">Deconnexion</a></li>
             <?php 
                 }
 
@@ -31,8 +31,8 @@
                 {
             ?>
 
-                <li><a href="admin/gestion_commande.php">Gestion des commande</a></li>
-                <li><a href="admin/gestion_salle.php">Gestion des salles</a></li>
+                <li><a href="<?php echo URL ?>admin/gestion_produit.php">Gestion des réservation</a></li>
+                <li><a href="<?php echo URL ?>admin/gestion_des_salles.php">Gestion des salles</a></li>
 
             <?php
                 }

@@ -2,7 +2,7 @@
 require_once("inc/init.inc.php");
 $erreur = "";
 //traitement du formulaire
-if(isset($_POST["pseudo"]) && isset($_POST["mdp"]) && isset($_POST["nom"]) && isset($_POST["prenom"]) && isset($_POST["email"]) && isset($_POST["civilite"]))
+if(isset($_POST["pseudo"], $_POST["mdp"], $_POST["nom"], $_POST["prenom"], $_POST["email"], $_POST["civilite"]))
 {
     $pseudo = $_POST["pseudo"];
     $mdp = $_POST["mdp"];
@@ -110,7 +110,7 @@ require("inc/nav.inc.php");
                             </select>
                         </div>
                         <div class="form-group">
-                            <input type="submit" id="submit" class="btn btn-primary btn-block" value="S'inscrire">
+                            <input type="submit" id="inscription" class="btn btn-primary btn-block" value="S'inscrire">
                         </div>
                         <a href="connexion.php" class="btn btn-warning btn-block">Connexion</a>
                     </form>

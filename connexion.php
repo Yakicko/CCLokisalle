@@ -79,7 +79,7 @@ require("inc/nav.inc.php");
 					<input type="text" name="mdp" id="mdp" class="form-control" value="" />
 				</div>
 				<div class="form-group">
-					<input type="submit" name="inscription" id="inscription" class="form-control btn btn-success" value="Connexion"> 
+					<input type="submit" id="connexion" class="form-control btn btn-success" value="Connexion"> 
 				</div>
 
 				<a href="inscription.php" class="btn btn-block btn-warning">S'inscire</a>
