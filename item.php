@@ -1,22 +1,22 @@
 <?php
 require_once("inc/init.inc.php");
 
-if(empty($_GET['id_article']) || !is_numeric($_GET['id_article']))
+if(empty($_GET['id_salle']) || !is_numeric($_GET['id_salle']))
 {
-	header("location:index.php");
+	//header("location:index.php");
 }
 
-$id_article = $_GET['id_article'];
-$recup_article = $pdo->prepare("SELECT * FROM article WHERE id_article = :id_article");
-$recup_article->bindParam(":id_article", $id_article, PDO::PARAM_STR);
-$recup_article->execute();
+$id_salle = $_GET['id_salle'];
+$recup_salle = $pdo->prepare("SELECT * FROM article WHERE id_salle = :id_salle");
+$recup_salle->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
+$recup_salle->execute();
 
-if($recup_article->rowCount() < 1)
+if($recup_salle->rowCount() < 1)
 {
-    header("location:index.php");
+   // header("location:index.php");
 }
 
-$article = $recup_article->fetch(PDO::FETCH_ASSOC);
+$article = $recup_salle->fetch(PDO::FETCH_ASSOC);
 
 
 
