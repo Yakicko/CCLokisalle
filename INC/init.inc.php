@@ -10,3 +10,15 @@ $message = "";
 
 // ouverture de la session
 session_start();
+
+if(isset($_GET['action']) && $_GET['action'] == 'deconnexion')
+{
+    unset($_SESSION['utilisateur']);
+}
+
+// définition de constante pour le chemin absolu ainsi que pour la racine serveur
+define("URL","/CCLokisalle/");
+
+//racine serveur
+define("RACINE_SERVEUR",$_SERVER["DOCUMENT_ROOT"] . URL);
+

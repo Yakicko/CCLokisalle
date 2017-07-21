@@ -10,11 +10,11 @@
         <!-- <link rel="icon" href="../../favicon.ico"> -->
         <title>Starter Template for Bootstrap</title>
         <!-- Bootstrap core CSS -->
-        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="<?php echo URL ?>css/bootstrap.min.css" rel="stylesheet">
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+        <link href="<?php echo URL ?>css/ie10-viewport-bug-workaround.css" rel="stylesheet">
         <!-- Custom styles for this template -->
-        <link href="css/style.css" rel="stylesheet">
+        <link href="<?php echo URL ?>css/style.css" rel="stylesheet">
         
     </head>
     <body>

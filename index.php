@@ -14,6 +14,8 @@ require_once("inc/init.inc.php");
 
 require("inc/header.inc.php");
 require("inc/nav.inc.php");
+// echo '<pre>';  var_dump($_GET); echo '</pre>';
+// echo '<pre>';  var_dump($_SESSION); echo '</pre>';
 ?>
 
 
