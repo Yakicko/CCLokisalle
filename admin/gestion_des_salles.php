@@ -9,7 +9,7 @@ if(!isAdmin())
 }
 
 
-if(isset($_POST["titre"], $_POST["description"], $_POST["photo"], $_POST["pays"], $_POST["ville"], $_POST["adresse"], $_POST["cp"], $_POST["capacite"], $_POST["categorie"], $_FILES["photo"]))
+if(isset($_POST["titre"], $_POST["description"], $_POST["pays"], $_POST["ville"], $_POST["adresse"], $_POST["cp"], $_POST["capacite"], $_POST["categorie"]))
 {
     $titre = $_POST["titre"];
     $description = $_POST["description"];
@@ -20,16 +20,18 @@ if(isset($_POST["titre"], $_POST["description"], $_POST["photo"], $_POST["pays"]
     $cp = $_POST["cp"];
     $capacite = $_POST["capacite"];
     $categorie = $_POST["categorie"];
-    $photo = $_FILES["photo"];
+    // $photo = $_FILES["photo"];
     $photo_bdd = "";
+   
 
 
-    if(!empty($photo))
+    if(!empty($_FILES["photo"]["name"]))
     {
-        $photo_bdd = $titre . "_" . $photo["name"];
+       
+        $photo_bdd = $titre . "_" . $_FILES["photo"]["name"];
 
         // vérification de l'extension de l'image (extension acceptées: jpg, jpeg, png, gif)
-		$extension = strrchr($photo["name"],"."); 
+		$extension = strrchr($_FILES["photo"]["name"],"."); 
 		
 		// on transforme $extension afin que tous les caractères soient en minuscule
 		$extension = strtolower($extension); // inverse => strtoupper()
@@ -95,18 +97,25 @@ require("../inc/nav.inc.php");
 ?>
 
 
+
+
         <div class="container">
 
             <div class="starter-template">
                 <h1>Gestion des salles</h1>
                 <?= $message ?>
             </div><!--/.starter-template -->
-
         </div><!-- /.container -->
         <div class="container">
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <form action="" method="post">
+                    <a href="?action=ajout" class="btn btn-primary" style="margin-bottom:50px;">ajouter une salle</a>
+<?php
+if(isset($_GET["action"]) && $_GET["action"] == "ajout")
+{
+?>
+
+                    <form action="" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="titre">Titre</label>
                             <input type="text" name="titre" id="titre" class="form-control"value="<?php if(isset($_POST["titre"])) echo $_POST["titre"] ?>">
@@ -152,10 +161,14 @@ require("../inc/nav.inc.php");
                             <input type="submit" class="btn btn-block btn-primary" value="Enregistrer">
                         </div>
                     </form>
+
                 </div> <!-- /.col-sm-6 -->
             </div><!-- /.row -->
         </div> <!-- /.container -->
-
+<?php
+}
+// elseif(isset($_GET["action"]) && )
+?>
 <?php
 require("../inc/footer.inc.php")
 ?>
