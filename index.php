@@ -1,21 +1,22 @@
 <?php
 require_once("inc/init.inc.php");
 
-
-
-
-
-
-
-
-
-
+if(empty($_GET['categorie']))
+{
+    //$liste_salle = $pdo->query("SELECT * FROM salle, produit WHERE salle.id_salle = produit.id_salle");
+    $liste_salle = $pdo->query("SELECT * FROM salle");
+}else{
+    $cat = $_GET['categorie'];
+    //$liste_salle = $pdo->prepare("SELECT * FROM salle, produit WHERE salle.id_salle = produit.id_salle AND categorie = :categorie");
+	$liste_salle = $pdo->prepare("SELECT * FROM salle WHERE categorie = :categorie");
+	$liste_salle->bindParam(":categorie", $cat, PDO::PARAM_STR);
+	$liste_salle->execute();
+}
 
 
 require("inc/header.inc.php");
 require("inc/nav.inc.php");
-// echo '<pre>';  var_dump($_GET); echo '</pre>';
-// echo '<pre>';  var_dump($_SESSION); echo '</pre>';
+
 ?>
 
 
@@ -31,22 +32,34 @@ require("inc/nav.inc.php");
         <div class="container">
 
         <div class="row">
-
             <div class="col-md-3" >
-                <p class="lead">Catégorie</p>
-                <div class=" list-group">
-                    <a href="#" class="list-group-item">Réunion</a>
-                    <a href="#" class="list-group-item">Bureau</a>
-                    <a href="#" class="list-group-item">Formation</a>
-                </div>
+<?php
+            $liste_categorie = $pdo->query("SELECT DISTINCT categorie FROM salle");
 
-                <p class="lead">Ville</p>
-                <div class="list-group">
-                    <a href="#" class="list-group-item">Paris</a>
-                    <a href="#" class="list-group-item">Lyon</a>
-                    <a href="#" class="list-group-item">Marseille</a>
-                </div>
+            echo   '<p class="lead">Catégorie</p>';
+            echo    '<div class=" list-group">';
 
+            while($categorie = $liste_categorie->fetch(PDO::FETCH_ASSOC))
+            {
+                
+                echo        '<a href="?categorie=' . $categorie['categorie'] . '" class="list-group-item">' . $categorie["categorie"] . '</a>';
+                
+            }
+
+            echo    '</div>';
+            $liste_ville = $pdo->query("SELECT DISTINCT ville FROM salle");
+
+            echo    '<p class="lead">Ville</p>';
+            echo    '<div class="list-group">';
+
+            while($ville = $liste_ville->fetch(PDO::FETCH_ASSOC))
+            {
+                
+                echo       '<a href="?ville=' . $ville['ville'] . '" class="list-group-item">' . $ville['ville'] . '</a>';
+                
+            } 
+            echo    '</div>';   
+?>
                 <p class="lead">Capacité</p>
                 <div class="list-group">
                 <input type="number" min="6" max="30" class="well-sm"/>
@@ -71,12 +84,11 @@ require("inc/nav.inc.php");
 
             
 
-            <div class="col-md-9">
-
+            <div class="col-md-9">                      
                 <div class="row carousel-holder">
 
                     <div class="col-md-12">
-                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="margin-bottom:30px;">
                             <ol class="carousel-indicators">
                                 <li data-target="#carousel-example-generic" data-slide-to="0" class="active" ></li>
                                 <li data-target="#carousel-example-generic" data-slide-to="1"></li>
@@ -102,36 +114,41 @@ require("inc/nav.inc.php");
                         </div>
                     </div>
 
-                </div>
+                
 <?php
-                for($i = 0; $i < 5; $i++)
+                //for($i = 0; $i < 5; $i++)
+                $compteur = 0;
+                while($salle = $liste_salle->fetch(PDO::FETCH_ASSOC))
                 {
-?>                
+                    if($compteur % 3 == 0 && $compteur != 0 )
+                    {
+                        echo '</div><div class="row">';
+                    }
+                        $compteur++;
+                    
+               
 
                 
 
-                    <div class="col-sm-4 col-lg-4 col-md-4">
-                        <div class="thumbnail">
-                            <img src="img/crview.jpg" alt="">
-                            <div class="caption">
-                                <h4 class="pull-right">$24.99</h4>
-                                <h4><a href="#">First Product</a>
-                                </h4>
-                                <p>Plus de détails sur ce salle<a target="_blank" href="item.php">Item</a>.</p>
-                            </div>
-                            <div class="ratings">
-                                <p class="pull-right">15 reviews</p>
-                                <p>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star-empty"></span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-<?php
+                    echo '<div class="col-sm-4 col-lg-4 col-md-4">';
+                    echo    '<div class="thumbnail">';
+                    echo        '<img src="' . URL . 'photo/' . $salle['photo'] . '" class="img-responsive" />';
+                    echo        '<div class="caption">';
+                    echo            '<p>Plus de détails sur ce salle<br /><a href="item.php?id_salle=' . $salle['id_salle'] . '">Cliquez ici.</a></p>';
+                    echo        '</div>';
+                    echo        '<div class="ratings">';
+                    echo            '<p class="pull-right">15 reviews</p>';
+                    echo            '<p>';
+                    echo                '<span class="glyphicon glyphicon-star"></span>';
+                    echo                '<span class="glyphicon glyphicon-star"></span>';
+                    echo                '<span class="glyphicon glyphicon-star"></span>';
+                    echo                '<span class="glyphicon glyphicon-star"></span>';
+                    echo                '<span class="glyphicon glyphicon-star-empty"></span>';
+                    echo            '</p>';
+                    echo        '</div>';
+                    echo    '</div>';
+                    echo '</div>';
+
                 }
 ?>                    
 

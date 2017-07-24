@@ -108,7 +108,8 @@ require("../inc/nav.inc.php");
         <div class="container">
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <a href="?action=ajout" class="btn btn-primary" style="margin-bottom:50px;">ajouter une salle</a>
+                    <a href="?action=ajout" class="btn btn-primary" style="margin-bottom:50px;">Ajouter une salle</a>
+                    <a href="?action=affichage" class="btn btn-info" style="margin-bottom:50px;">Afficher une salle</a>
 <?php
 if(isset($_GET["action"]) && $_GET["action"] == "ajout")
 {
@@ -165,8 +166,45 @@ if(isset($_GET["action"]) && $_GET["action"] == "ajout")
             </div><!-- /.row -->
         </div> <!-- /.container -->
 <?php
+} 
+ elseif(isset($_GET["action"]) &&  $_GET["action"] == "affichage")
+{
+     $affichage = $pdo->query("SELECT * FROM salle");
+    $nb_col = $affichage->columnCount();
+    echo "<table border='1'class='table table-bordered'>";
+    echo "<thead>";
+    echo "<tr>";
+    for($i = 0; $i < $nb_col; $i++)
+    {
+        $colonne = $affichage->getColumnMeta($i)["name"];
+       echo "<th>" . $colonne  . "</th>";
+    }
+    echo "</tr>";
+    echo "</thead>";
+    echo "<tbody>";
+    while($salle = $affichage->fetch(PDO::FETCH_ASSOC))
+    {
+        echo "<tr>";
+        foreach($salle AS $indice => $valeur)
+        {
+            if($indice == "photo")
+            {
+                echo "<td><img src='" . URL . "photo/" . $valeur . "' class='img-responsive' /></td>";
+            }
+            else
+            {
+                echo "<td>" . $valeur . "</td>";
+            }
+            
+        }
+        echo "</tr>";
+    }
+    echo "</tbody>";
+    echo "</table>";
+?>
+
+<?php
 }
-// elseif(isset($_GET["action"]) && )
 ?>
 <?php
 require("../inc/footer.inc.php")
