@@ -1,13 +1,68 @@
 <?php
 require_once("../inc/init.inc.php");
 
-$erreur = "";
 
 if(!isAdmin())
 {
     header("location:" . URL . "index.php");
 }
+// Déclaration des variables
+$erreur = "";
 
+$titre = "";
+$description = "";
+$pays = "";
+$ville = "";
+$adresse = "";
+$cp = "";
+$capacite = "";
+$categorie = "";
+
+// SUPPRESSION DANS LA BASE DE DONNER
+if(isset($_GET["action"],$_GET["id"]) && $_GET["action"] == "supprimer" && is_numeric($_GET["id"]))
+{
+    $id_salle = $_GET["id"];
+    $salle_supprimer = $pdo->prepare("SELECT * FROM salle WHERE id_salle = :id_salle");
+    $salle_supprimer->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
+    $salle_supprimer->execute();
+    
+    $salle_a_supprimer = $salle_supprimer->fetch(PDO::FETCH_ASSOC);
+    // on vérifie si la photo existe
+    if(!empty($salle_a_supprimer["photo"]))
+    {
+        // on vérifie le chemin si le fichier existe
+        $chemin_photo = RACINE_SERVEUR . "photo/" . $salle_a_supprimer["photo"];
+        if(file_exists($chemin_photo))
+        {
+            unlink($chemin_photo); // unlink() permet de supprimer un fichier sur le serveur.
+        }
+    }
+    
+    $suppression = $pdo->prepare("DELETE FROM salle WHERE id_salle = :id_salle");
+    $suppression->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
+    $suppression->execute();
+    header("location:gestion_des_salles.php?action=affichage");
+}
+    
+
+if(isset($_GET["action"], $_GET["id"]) && $_GET["action"] == "modifier" && !empty($_GET["id"]) && is_numeric($_GET["id"]))
+{
+    $info_modif = $pdo->prepare("SELECT * FROM salle WHERE id_salle = :id_salle");
+    $info_modif->bindParam(":id_salle", $_GET["id"], PDO::PARAM_STR);
+    $info_modif->execute();
+
+    $info_modification = $info_modif->fetch(PDO::FETCH_ASSOC);
+
+    $titre = $info_modification["titre"];
+    $description = $info_modification["description"];
+    $pays = $info_modification["pays"];
+    $ville = $info_modification["ville"];
+    $adresse = $info_modification["adresse"];
+    $cp = $info_modification["cp"];
+    $capacite = $info_modification["capacite"];
+    $categorie = $info_modification["categorie"];
+    
+}
 
 if(isset($_POST["titre"], $_POST["description"], $_POST["pays"], $_POST["ville"], $_POST["adresse"], $_POST["cp"], $_POST["capacite"], $_POST["categorie"]))
 {
@@ -19,8 +74,9 @@ if(isset($_POST["titre"], $_POST["description"], $_POST["pays"], $_POST["ville"]
     $cp = $_POST["cp"];
     $capacite = $_POST["capacite"];
     $categorie = $_POST["categorie"];
-    // $photo = $_FILES["photo"];
     $photo_bdd = "";
+
+    
    
 
 
@@ -66,10 +122,19 @@ if(isset($_POST["titre"], $_POST["description"], $_POST["pays"], $_POST["ville"]
     }
 
     
-
+    //  INSERTION/MODIFICATION EN S'IL N'Y A PAS D'ERREUR
     if(!$erreur)
     {
-        $insertion = $pdo->prepare("INSERT INTO salle (titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (:titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)");
+        if(isset($_GET["action"]) && $_GET["action"] == "ajout")
+        {
+            $insertion = $pdo->prepare("INSERT INTO salle (titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (:titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)");
+        }
+        elseif(isset($_GET["action"]) && $_GET["action"] == "modifier")
+        {
+            $insertion = $pdo->prepare("UPDATE salle SET titre = :titre, description = :description, photo = :photo, pays = :pays, ville = :ville, adresse = :adresse, cp = :cp, capacite = :capacite, categorie = :categorie WHERE id_salle = :id_salle");
+            $insertion->bindParam(":id_salle", $_GET["id"], PDO::PARAM_STR);
+        }
+        
         
         $insertion->bindParam(":titre", $titre, PDO::PARAM_STR);
         $insertion->bindParam(":description", $description, PDO::PARAM_STR);
@@ -80,12 +145,15 @@ if(isset($_POST["titre"], $_POST["description"], $_POST["pays"], $_POST["ville"]
         $insertion->bindParam(":cp", $cp, PDO::PARAM_STR);
         $insertion->bindParam(":capacite", $capacite, PDO::PARAM_STR);
         $insertion->bindParam(":categorie", $categorie, PDO::PARAM_STR);
+        
 
         $insertion->execute();
     }
+
+
+    
+   
 }
-
-
 
 
 
@@ -107,22 +175,22 @@ require("../inc/nav.inc.php");
         </div><!-- /.container -->
         <div class="container">
             <div class="row">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <a href="?action=ajout" class="btn btn-primary" style="margin-bottom:50px;">ajouter une salle</a>
-                    <a href="?action=affichage" class="btn btn-warning" style="margin-bottom:50px;">Afficher les salles</a>
+                <div class="col-sm-10 col-sm-offset-1 text-center">
+                    <a href="?action=ajout" class="btn btn-primary text-center" style="margin-bottom:50px;">ajouter une salle</a>
+                    <a href="?action=affichage" class="btn btn-warning text-center" style="margin-bottom:50px;">Afficher les salles</a>
 <?php
-if(isset($_GET["action"]) && $_GET["action"] == "ajout")
+if(isset($_GET["action"]) && ($_GET["action"] == "ajout" || $_GET["action"] == "modifier"))
 {
 ?>
 
                     <form action="" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="titre">Titre</label>
-                            <input type="text" name="titre" id="titre" class="form-control"value="<?php if(isset($_POST["titre"])) echo $_POST["titre"] ?>">
+                            <input type="text" name="titre" id="titre" class="form-control"value="<?php echo $titre ?>">
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea class="form-control" name="description" id="description"><?php if(isset($_POST["description"])) echo $_POST["description"] ?></textarea>
+                            <textarea class="form-control" name="description" id="description"><?php echo $description ?></textarea>
                         </div>
                         <div class="form-group">
                             <label for="photo">Photo</label>
@@ -130,23 +198,23 @@ if(isset($_GET["action"]) && $_GET["action"] == "ajout")
                         </div>
                         <div class="form-group">
                             <label for="pays">Pays</label>
-                            <input type="text" name="pays" id="pays" class="form-control"value="<?php if(isset($_POST["pays"])) echo $_POST["pays"] ?>">
+                            <input type="text" name="pays" id="pays" class="form-control"value="<?php echo $pays ?>">
                         </div>
                         <div class="form-group">
                             <label for="ville">Ville</label>
-                            <input type="text" name="ville" id="ville" class="form-control"value="<?php if(isset($_POST["ville"])) echo $_POST["ville"] ?>">
+                            <input type="text" name="ville" id="ville" class="form-control"value="<?php echo $ville ?>">
                         </div>
                         <div class="form-group">
                             <label for="adresse">Adresse</label>
-                            <input type="text" name="adresse" id="adresse" class="form-control"value="<?php if(isset($_POST["adresse"])) echo $_POST["adresse"] ?>">
+                            <input type="text" name="adresse" id="adresse" class="form-control"value="<?php echo $adresse ?>">
                         </div>
                         <div class="form-group">
                             <label for="cp">Code psotal</label>
-                            <input type="text" name="cp" id="cp" class="form-control"value="<?php if(isset($_POST["cp"])) echo $_POST["cp"] ?>">
+                            <input type="text" name="cp" id="cp" class="form-control"value="<?php echo $cp ?>">
                         </div>
                         <div class="form-group">
                             <label for="capacite">Capacite</label>
-                            <input type="text" name="capacite" id="capacite" class="form-control"value="<?php if(isset($_POST["capacite"])) echo $_POST["capacite"] ?>">
+                            <input type="text" name="capacite" id="capacite" class="form-control"value="<?php echo $capacite ?>">
                         </div>
                         <div class="form-group">
                             <label for="categorie">Categorie</label>
@@ -183,6 +251,7 @@ elseif(isset($_GET["action"]) && $_GET["action"] == "affichage")
 
        echo "<th>" . $colonne  . "</th>";
     }
+    echo "<th>Modifier/supprimer</th>";
 
     echo "</tr>";
     echo "</thead>";
@@ -195,7 +264,11 @@ elseif(isset($_GET["action"]) && $_GET["action"] == "affichage")
         {
             if($indice == "photo")
             {
-                echo "<td><img src='" . URL . "photo/" . $valeur . "' class='img-responsive' /></td>";
+                echo "<td><a href='#' class='thumbnail' data-toggle='modal' data-target='#lightbox'><img src='" . URL . "photo/" . $valeur . "' class='img-responsive' /></a></td>";
+            }
+            elseif($indice == "description")
+            {
+                echo "<td>" . substr($valeur, 0, 56) . "...<a href=''>Lire la suite</a></td>";
             }
             else
             {
@@ -203,12 +276,28 @@ elseif(isset($_GET["action"]) && $_GET["action"] == "affichage")
             }
             
         }
+        echo "<td><a href='gestion_des_salles.php?action=modifier&id=" . $salle["id_salle"] . "' class='btn btn-warning btn-block' ><span class='glyphicon glyphicon-refresh'></span></a>";
+        echo "<a href='gestion_des_salles.php?action=supprimer&id=" . $salle["id_salle"] . "' class='btn btn-danger btn-block' ><span class='glyphicon glyphicon-remove-sign'></span ></a></td>";
         echo "</tr>";
     }
 
     echo "</tbody>";
     echo "</table>";
+
 ?>
+
+
+
+<div id="lightbox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <button type="button" class="close hidden" data-dismiss="modal" aria-hidden="true">×</button>
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" alt="" />
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php
 }
@@ -216,3 +305,4 @@ elseif(isset($_GET["action"]) && $_GET["action"] == "affichage")
 <?php
 require("../inc/footer.inc.php")
 ?>
+
